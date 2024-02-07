@@ -10,7 +10,7 @@ ui <- fluidPage(
   
   textInput("timePeriod", "Time period (in hours)", value = 3),
   
-  uiOutput("responseUI")
+  plotOutput("responsePlot")
 )
 
 # Define server logic required to draw a histogram
@@ -18,12 +18,11 @@ server <- function(input, output, session) {
   
   readData <- reactiveFileReader(1000, 
                        session,
-                       outputPath,
+                       "../data/responses.csv",
                        read.csv, 
                        header = FALSE)
   
   getData <- function() {
-    
     dat <- readData()
     
     currentTime <- Sys.time()
@@ -36,9 +35,8 @@ server <- function(input, output, session) {
     
   }
   
-  output$responseUI <- renderUI({
-    if(file.exists(outputPath)) {
-      dat <- getData()
+  output$responsePlot <- renderPlot({
+    dat <- getData()
     
     p <- ggplot(dat, aes(V2)) +
       geom_bar() +
@@ -49,13 +47,7 @@ server <- function(input, output, session) {
       labs() +
       theme_minimal()
     
-    tagList(
-      plotOutput(p)
-    )} else {
-      tagList(
-        renderText("There are no responses yet")
-      )
-    }
+    return(p)
   })
 }
 
