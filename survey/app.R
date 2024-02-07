@@ -1,5 +1,4 @@
-library(shinysurveys)
-
+source("../global.R")
 ui <- shiny::fluidPage(
   uiOutput("paceInput"),
   actionButton("submit", "Submit")
@@ -8,7 +7,6 @@ ui <- shiny::fluidPage(
 
 server <- function(input, output, session) {
   
-  outputPath <- "../data/responses.csv"
   formData <- reactive({
     data <- data.frame(timestamp = Sys.time(),
                        response = input$paceInput)
